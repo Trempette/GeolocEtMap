@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap superMap;
 
+
+    //Création de l'activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    // onRequestPermissionResult : scrute les résultats des demande de permission. Quand est elle lancée ?
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -71,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // checkPermission : nom epxlicite. Permet de vérifier les permission GPS. si les autorisations sont là, lance initLocation. Sinon demande les autorisations.
     public void checkPermission(){
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -104,12 +109,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //moveCamera : zoom la caméra sur l'utilisateur. Pratique.
     private void moveCamera(Location location) {
         // zoome la camera sur la dernière position connue
         LatLng latLong = new LatLng(location.getLatitude(), location.getLongitude());
         superMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, 17.0f));
     }
 
+
+    //initLocation : lance la gélocalisation après check des permissions GPS, si toutes les permissions sont accordées
     @SuppressLint({"Missing Permission", "MissingPermission"})
     public void initLocation(){
             superMap.setMyLocationEnabled(true); // position de l'utilisateur sur la carte
@@ -136,12 +144,15 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 public void onStatusChanged(String provider, int status, Bundle extras) {
+                    //méthode appelée au changement de status lors du déroulement de l'activité.
                 }
 
                 public void onProviderEnabled(String provider) {
+                    //Méthode appelée lorsque l'activité est lancée et que le bonhomme désactive son gps durant le déroulement de l'activité. le con.
                 }
 
                 public void onProviderDisabled(String provider) {
+                    //Méthode appelée lorsque l'activité est lancée et que le bonhomme active son gps durant le déroulement de l'activité. Habile.
                 }
             };
             // initialisation de la vérification du déplacement par GPS et par réseau WIFI
