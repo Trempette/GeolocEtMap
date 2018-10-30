@@ -3,17 +3,31 @@ package fr.edouardkerhir.geolocmap;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListPopupWindow;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,6 +37,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,8 +48,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -52,8 +69,9 @@ public class MainActivity extends AppCompatActivity {
     final static double TOULOUSE_LONGITUDE_BORDURES_BOT = 1.411854;
     final static double TOULOUSE_LATITUDE_BORDURES_TOP = 43.642094;
     final static double TOULOUSE_LONGITUDE_BORDURES_TOP = 1.480995;
+    final static int DISTANCE_POUR_CHOPPER_LES_BONBONS = 50;
     final static int ZOOM_LVL_BY_DEFAULT = 13;
-
+    private PopupWindow popUp;
     private LocationManager mLocationManager = null;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap superMap;
@@ -61,11 +79,13 @@ public class MainActivity extends AppCompatActivity {
     private String url;
     private ArrayList<Places> placesAdresses;
     private RequestQueue requestQueue;
+    private float mZoom;
     private ArrayList<Marker> mMarkers;
 
     //Création de l'activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mZoom = 18.0f;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestQueue = Volley.newRequestQueue(this);
@@ -136,8 +156,12 @@ public class MainActivity extends AppCompatActivity {
     //moveCamera : zoom la caméra sur l'utilisateur. Pratique.
     private void moveCamera(Location location) {
         // zoome la camera sur la dernière position connue
+        mZoom = superMap.getCameraPosition().zoom;
         LatLng latLong = new LatLng(location.getLatitude(), location.getLongitude());
-        superMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, 17.0f));
+
+        superMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, mZoom));
+
+
     }
 
 
@@ -155,9 +179,18 @@ public class MainActivity extends AppCompatActivity {
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
                                 // Logic to handle location object
+                                LatLng latLong = new LatLng(location.getLatitude(), location.getLongitude());
+                                CameraPosition cameraPosition = new CameraPosition.Builder()
+                                        .target(latLong) // Sets the center of the map to
+                                        .zoom(mZoom)                   // Sets the zoom
+                                        .bearing(0.0f) // Sets the orientation of the camera to east
+                                        .tilt(70.0f)    // Sets the tilt of the camera to 30 degrees
+                                        .build();    // Creates a CameraPosition from the builder
+                                superMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                                        cameraPosition));
                                 url = "https://api-adresse.data.gouv.fr/search/?q=citycode=31555&lng="+location.getLongitude()+"&lat="+location.getLatitude()+"&type=housenumber&limit=500";
                                 requeteAPI(url);
-                                moveCamera(location);
+                                //moveCamera(location);
                                 userLocation = location;
                             }
                         }
@@ -194,7 +227,23 @@ public class MainActivity extends AppCompatActivity {
         map.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
+
+                try {
+                    // Customise the styling of the base map using a JSON object defined
+                    // in a raw resource file.
+                    boolean success = googleMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    MainActivity.this, R.raw.json_style_map));
+
+                    if (!success) {
+                        Log.e("TAG", "Style parsing failed.");
+                    }
+                } catch (Resources.NotFoundException e) {
+                    Log.e("TAG", "Can't find style. Error: ", e);
+                }
+
                 superMap = googleMap;
+
                 LatLngBounds toulouseBounds = new LatLngBounds(
                         new LatLng(TOULOUSE_LATITUDE_BORDURES_BOT, TOULOUSE_LONGITUDE_BORDURES_BOT), new LatLng(TOULOUSE_LATITUDE_BORDURES_TOP, TOULOUSE_LONGITUDE_BORDURES_TOP));
                 googleMap.setLatLngBoundsForCameraTarget(toulouseBounds);
@@ -207,6 +256,8 @@ public class MainActivity extends AppCompatActivity {
                 mMapConfig.setZoomControlsEnabled(true);
                 mMapConfig.setMyLocationButtonEnabled(true);
                 mMapConfig.setCompassEnabled(true);
+                mMapConfig.setTiltGesturesEnabled(true);
+
                 checkPermission();
             }
         });
@@ -233,7 +284,15 @@ public class MainActivity extends AppCompatActivity {
                                 String adress = properties.getString("label");
                                 double longitude = coordinates.getDouble(0);
                                 double latitude = coordinates.getDouble(1);
-                                placesAdresses.add(new Places(name, adress, longitude, latitude));
+                                int nbCandy = (int) (Math.random()*4+1);
+                                ArrayList<bonbonItemInfoWindow> candyThisPlace = new ArrayList<>();
+                                for (int j=0; j<nbCandy; j++){
+                                    int index = (int) (Math.random()*9+1);
+                                    int nbForIndex = (int) (Math.random()*3+2);
+                                    candyThisPlace.add(new bonbonItemInfoWindow(index, nbForIndex));
+                                }
+
+                                placesAdresses.add(new Places(name, adress, longitude, latitude, nbCandy, candyThisPlace));
                             }
                             createMarkers(placesAdresses);
                         } catch (JSONException e) {
@@ -262,8 +321,9 @@ public class MainActivity extends AppCompatActivity {
             LatLng PlacePosition = new LatLng(thisPlace.getLatitude(), thisPlace.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(PlacePosition);
-            markerOptions.snippet(null);
             Marker marker = superMap.addMarker(markerOptions);
+            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.candyiconcolor);
+            marker.setIcon(icon);
             marker.setTag(thisPlace);
             mMarkers.add(marker);
             boolean focus = false;
@@ -272,9 +332,71 @@ public class MainActivity extends AppCompatActivity {
         superMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                //popupBuilder(marker);
+                popupBuilder(marker);
                 return false;
             }
         });
+    }
+
+    private void popupBuilder(final Marker marker) {
+
+        Display display = getWindowManager().getDefaultDisplay();
+
+        Point size = new Point();
+        display.getSize(size);
+        int width = (int) Math.round(size.x * 0.7);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View popUpView = inflater.inflate(R.layout.custom_info_window, null);
+
+        //creation fenetre popup
+        boolean focusable = true;
+        popUp = new PopupWindow(popUpView, width, ListPopupWindow.WRAP_CONTENT, focusable);
+        //show popup
+        popUp.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
+        popUpView.setBackgroundResource(R.drawable.fond_popup);
+
+        final Places place = (Places) marker.getTag();
+        TextView placeName = popUpView.findViewById(R.id.place_name);
+        placeName.setBackgroundResource(R.drawable.fond_title_popup);
+        placeName.setText(place.getName());
+
+        ListView candyList = popUpView.findViewById(R.id.candy_listview);
+        ArrayList<bonbonItemInfoWindow> candyListItem = place.getCandyPlaces();
+
+        CandyAdapter adapter = new CandyAdapter(this, candyListItem);
+        candyList.setAdapter(adapter);
+
+        final Button getCandy = popUpView.findViewById(R.id.button_get_candy);
+        getCandy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (place.isVisited()) {
+                    getCandy.setText("tu as déjà récupéré ces bonbons fdp!");
+                } else {
+                    if (getDistanceFromMarker(marker) < DISTANCE_POUR_CHOPPER_LES_BONBONS) {
+                        Toast.makeText(MainActivity.this, "Tu es suffisament proche !", Toast.LENGTH_LONG).show();
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.candyicongrey);
+                        marker.setIcon(icon);
+                        place.setVisited(true);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Tu es trop loin !", Toast.LENGTH_LONG).show();
+                    }
+                    popUp.dismiss();
+                }
+            }
+        });
+    }
+
+    public float getDistanceFromMarker(Marker marker){
+        float distance;
+        Places thisPlace = (Places) marker.getTag();
+        Location thisPlaceLocation = new Location("");
+        thisPlaceLocation.setLatitude(thisPlace.getLatitude());
+        thisPlaceLocation.setLongitude(thisPlace.getLongitude());
+        distance = thisPlaceLocation.distanceTo(userLocation);
+
+        return distance;
     }
 }
