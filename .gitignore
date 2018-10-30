@@ -83,7 +83,10 @@ obj/
 .idea/sqlDataSources.xml
 .idea/dynamic.xml
 .idea/uiDesigner.xml
+<<<<<<< HEAD
 .idea/assetWizardSettings.xml
+=======
+>>>>>>> 2de3b30ee0839b83967367f46d471bb4e63d2cd4
 
 # OS-specific files
 .DS_Store
@@ -132,4 +135,8 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 
+<<<<<<< HEAD
 # End of https://www.gitignore.io/api/androidstudio
+=======
+# End of https://www.gitignore.io/api/androidstudio
+>>>>>>> 2de3b30ee0839b83967367f46d471bb4e63d2cd4

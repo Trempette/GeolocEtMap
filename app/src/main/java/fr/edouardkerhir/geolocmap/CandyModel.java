@@ -4,6 +4,15 @@ public class CandyModel {
     private String nom;
     private int image;
     private double poids;
+    private int nbCandy;
+
+    public int getNbCandy() {
+        return nbCandy;
+    }
+
+    public void setNbCandy(int nbCandy) {
+        this.nbCandy = nbCandy;
+    }
 
     public CandyModel(String nom, int image, double poids) {
         this.nom = nom;
