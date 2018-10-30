@@ -24,7 +24,7 @@ class CandySingleton {
         CandyArrayList.add(new CandyModel("Schtrumpf", R.drawable.schtroumpfs, 6.19));
         CandyArrayList.add(new CandyModel("Crocodile", R.drawable.crocodile, 6.19));
         CandyArrayList.add(new CandyModel("Chamalow", R.drawable.chama, 2.00));
-        CandyArrayList.add(new CandyModel("Pastille Vichy", R.drawable.pastille_du_bassin_de_vichy, 2.50));
+        CandyArrayList.add(new CandyModel("Carambar", R.drawable.pastille_du_bassin_de_vichy, 6.50));
         CandyArrayList.add(new CandyModel("Reglisse", R.drawable.baton1, 8.57));
         CandyArrayList.add(new CandyModel("Koala", R.drawable.chamalow, 6.19));
         CandyArrayList.add(new CandyModel("Scoubidou", R.drawable.lasso_scoubidou, 6.66));
