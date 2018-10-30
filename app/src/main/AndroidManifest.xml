@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.edouardkerhir.geolocmap">
 
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,13 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:apiKey="AIzaSyBc3jTPk4RWuV1ufPYaQ1mIs_xlzvUVHo4"
-            android:value="AIzaSyBc3jTPk4RWuV1ufPYaQ1mIs_xlzvUVHo4" />
-
-        <activity android:name=".ListActivity"></activity>
+            android:value="AIzaSyBc3jTPk4RWuV1ufPYaQ1mIs_xlzvUVHo4"
+            android:apiKey="AIzaSyBc3jTPk4RWuV1ufPYaQ1mIs_xlzvUVHo4"/>
     </application>
 
 </manifest>

@@ -2,13 +2,13 @@ package fr.edouardkerhir.geolocmap;
 
 public class CandyModel {
     private String nom;
-    private int poids;
-    private double position;
+    private int image;
+    private double poids;
 
-    public CandyModel(String nom, int poids, double position) {
+    public CandyModel(String nom, int image, double poids) {
         this.nom = nom;
         this.poids = poids;
-        this.position = position;
+        this.image=image;
     }
 
     public CandyModel() {
@@ -22,19 +22,19 @@ public class CandyModel {
         this.nom = nom;
     }
 
-    public int getPoids() {
+    public double getPoids() {
         return poids;
     }
 
-    public void setPoids(int poids) {
+    public void setPoids(double poids) {
         this.poids = poids;
     }
 
-    public double getPosition() {
-        return position;
+    public int getImage() {
+        return image;
     }
 
-    public void setPosition(double position) {
-        this.position = position;
+    public void setImage(int image) {
+        this.image = image;
     }
 }
