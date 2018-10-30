@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class ListAdapter extends ArrayAdapter<CandyModel> {
+
+    ImageAdapter imageAdapter;
+
     public ListAdapter(Context context, ArrayList<CandyModel> list) {
         super(context, 0, list);
     }
@@ -30,18 +34,17 @@ public class ListAdapter extends ArrayAdapter<CandyModel> {
             viewHolder.candyName = convertView.findViewById(R.id.candyName);
             viewHolder.popUpButton = convertView.findViewById(R.id.popUpButton);
             viewHolder.drawerInfo = convertView.findViewById(R.id.drawer_Info);
-            viewHolder.nbCandy = convertView.findViewById(R.id.tv_nbcandy);
             viewHolder.poidCandy = convertView.findViewById(R.id.tv_poid_candy);
             viewHolder.ivCandy = convertView.findViewById(R.id.iv_candy);
+            viewHolder.viewp = convertView.findViewById(R.id.vp);
             convertView.setTag(viewHolder);
         }
 
         final CandyModel candy = getItem(position);
         viewHolder = (ListViewHolder) convertView.getTag();
         viewHolder.candyName.setText(candy.getNom());
-        viewHolder.nbCandy.setText(candy.getNbCandy());
         viewHolder.ivCandy.setImageDrawable(getContext().getResources().getDrawable(candy.getImage()));
-        viewHolder.poidCandy.setText((int) candy.getPoids());
+        viewHolder.poidCandy.setText(String.valueOf((double) candy.getPoids()));
 
         final ListViewHolder finalViewHolder = viewHolder;
         viewHolder.popUpButton.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +58,10 @@ public class ListAdapter extends ArrayAdapter<CandyModel> {
             }
         });
 
+        String bonbon = candy.getNom();
+        imageAdapter = new ImageAdapter(getContext(),bonbon);
+        viewHolder.viewp.setAdapter(imageAdapter);
+
         return convertView;
     }
     class ListViewHolder {
@@ -64,6 +71,6 @@ public class ListAdapter extends ArrayAdapter<CandyModel> {
         public ConstraintLayout drawerInfo;
         public ImageButton popUpButton;
         public ImageView ivCandy;
-
+        public ViewPager viewp;
     }
 }
