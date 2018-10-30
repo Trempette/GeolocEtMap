@@ -3,17 +3,29 @@ package fr.edouardkerhir.geolocmap;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListPopupWindow;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -53,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     final static double TOULOUSE_LATITUDE_BORDURES_TOP = 43.642094;
     final static double TOULOUSE_LONGITUDE_BORDURES_TOP = 1.480995;
     final static int ZOOM_LVL_BY_DEFAULT = 13;
-
+    private PopupWindow popUp;
     private LocationManager mLocationManager = null;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap superMap;
@@ -233,7 +245,15 @@ public class MainActivity extends AppCompatActivity {
                                 String adress = properties.getString("label");
                                 double longitude = coordinates.getDouble(0);
                                 double latitude = coordinates.getDouble(1);
-                                placesAdresses.add(new Places(name, adress, longitude, latitude));
+                                int nbCandy = (int) (Math.random()*4+1);
+                                ArrayList<bonbonItemInfoWindow> candyThisPlace = new ArrayList<>();
+                                for (int j=0; j<nbCandy; j++){
+                                    int index = (int) (Math.random()*9+1);
+                                    int nbForIndex = (int) (Math.random()*3+2);
+                                    candyThisPlace.add(new bonbonItemInfoWindow(index, nbForIndex));
+                                }
+
+                                placesAdresses.add(new Places(name, adress, longitude, latitude, nbCandy, candyThisPlace));
                             }
                             createMarkers(placesAdresses);
                         } catch (JSONException e) {
@@ -262,7 +282,6 @@ public class MainActivity extends AppCompatActivity {
             LatLng PlacePosition = new LatLng(thisPlace.getLatitude(), thisPlace.getLongitude());
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(PlacePosition);
-            markerOptions.snippet(null);
             Marker marker = superMap.addMarker(markerOptions);
             marker.setTag(thisPlace);
             mMarkers.add(marker);
@@ -272,9 +291,37 @@ public class MainActivity extends AppCompatActivity {
         superMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                //popupBuilder(marker);
+                popupBuilder(marker);
                 return false;
             }
         });
+    }
+
+    private void popupBuilder(Marker marker) {
+
+        Display display = getWindowManager().getDefaultDisplay();
+
+        Point size = new Point();
+        display.getSize(size);
+        int width = (int) Math.round(size.x * 0.7);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popUpView = inflater.inflate(R.layout.custom_info_window, null);
+
+        //creation fenetre popup
+        boolean focusable = true;
+        popUp = new PopupWindow(popUpView, width, ListPopupWindow.WRAP_CONTENT, focusable);
+        //show popup
+        popUp.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
+
+        final Places place = (Places) marker.getTag();
+        TextView placeName = popUpView.findViewById(R.id.place_name);
+        placeName.setText(place.getName());
+
+        ListView candyList = popUpView.findViewById(R.id.candy_listview);
+        ArrayList<bonbonItemInfoWindow> candyListItem = place.getCandyPlaces();
+
+        CandyAdapter adapter = new CandyAdapter(this, candyListItem);
+        candyList.setAdapter(adapter);
     }
 }
