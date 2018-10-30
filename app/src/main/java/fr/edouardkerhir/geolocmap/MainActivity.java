@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -11,8 +13,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.location.LocationServices;
@@ -22,9 +31,19 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     final static double TOULOUSE_LATITUDE = 43.6043;
@@ -38,18 +57,23 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager mLocationManager = null;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleMap superMap;
-
+    private Location userLocation;
+    private String url;
+    private ArrayList<Places> placesAdresses;
+    private RequestQueue requestQueue;
+    private ArrayList<Marker> mMarkers;
 
     //Création de l'activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        requestQueue = Volley.newRequestQueue(this);
+        placesAdresses = new ArrayList<>();
+        mMarkers = new ArrayList<>();
         MapView mMap = (MapView) findViewById(R.id.map_view);
         mMap.onCreate(savedInstanceState);
         createMap(mMap);
-
     }
 
 
@@ -131,7 +155,10 @@ public class MainActivity extends AppCompatActivity {
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
                                 // Logic to handle location object
+                                url = "https://api-adresse.data.gouv.fr/search/?q=citycode=31555&lng="+location.getLongitude()+"&lat="+location.getLatitude()+"&type=housenumber&limit=500";
+                                requeteAPI(url);
                                 moveCamera(location);
+                                userLocation = location;
                             }
                         }
                     });
@@ -140,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
             mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
             final LocationListener locationListener = new LocationListener() {
                 public void onLocationChanged(Location location) {
+                    userLocation = location;
                     moveCamera(location);
                 }
 
@@ -183,5 +211,70 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void requeteAPI(String urlRequete){
+        // Création de la requête vers l'API, ajout des écouteurs pour les réponses et erreurs possibles
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, urlRequete, null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray adresses = response.getJSONArray("features");
+                            placesAdresses.clear();
+                            for (int i = 0; i < adresses.length(); i++) {
+                                JSONObject adresseInfo = (JSONObject) adresses.get(i);
+                                JSONObject properties = (JSONObject) adresseInfo.get("properties");
+                                JSONObject geometry = (JSONObject) adresseInfo.get("geometry");
+                                JSONArray coordinates = (JSONArray) geometry.get("coordinates");
+                                String name = properties.getString("name");
+                                String adress = properties.getString("label");
+                                double longitude = coordinates.getDouble(0);
+                                double latitude = coordinates.getDouble(1);
+                                placesAdresses.add(new Places(name, adress, longitude, latitude));
+                            }
+                            createMarkers(placesAdresses);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Afficher l'erreur
+                        Log.d("VOLLEY_ERROR", "onErrorResponse: " + error.getMessage());
+                    }
+                }
+        );
+
+        // On ajoute la requête à la file d'attente
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public void createMarkers(ArrayList<Places> placesAdresses) {
+        mMarkers.clear();
+        for (final Places thisPlace : placesAdresses) {
+            LatLng PlacePosition = new LatLng(thisPlace.getLatitude(), thisPlace.getLongitude());
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(PlacePosition);
+            markerOptions.snippet(null);
+            Marker marker = superMap.addMarker(markerOptions);
+            marker.setTag(thisPlace);
+            mMarkers.add(marker);
+            boolean focus = false;
+        }
+
+        superMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //popupBuilder(marker);
+                return false;
+            }
+        });
     }
 }
