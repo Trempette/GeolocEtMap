@@ -1,14 +1,20 @@
 package fr.edouardkerhir.geolocmap;
 
-public class UserModel {
-    private String nom;
-    private double poid;
-    private int candy;
+import java.util.ArrayList;
 
-    public UserModel(String nom, double poid, int candy) {
+public class UserModel {
+    private String nom = "Candy";
+    private double poid = 0.0;
+    private int candy = 0;
+    private int level = 0;
+    private ArrayList<CandyModel> usersCandies = null;
+
+    public UserModel(String nom, double poid, int candy, ArrayList usersCandies) {
         this.nom = nom;
         this.poid = poid;
         this.candy = candy;
+        this.level=0;
+        this.usersCandies= usersCandies;
     }
 
     public UserModel() {
@@ -36,5 +42,21 @@ public class UserModel {
 
     public void setCandy(int candy) {
         this.candy = candy;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public ArrayList<CandyModel> getUsersCandies() {
+        return usersCandies;
+    }
+
+    public void setUsersCandies(ArrayList<CandyModel> usersCandies) {
+        this.usersCandies = usersCandies;
     }
 }

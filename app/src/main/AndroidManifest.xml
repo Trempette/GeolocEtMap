@@ -29,7 +29,14 @@
             android:apiKey="AIzaSyBc3jTPk4RWuV1ufPYaQ1mIs_xlzvUVHo4"
             android:value="AIzaSyBc3jTPk4RWuV1ufPYaQ1mIs_xlzvUVHo4" />
 
-        <activity android:name=".ProfilActivity"></activity>
+        <activity android:name=".ProfilActivity" />
+        <activity android:name=".CitrouilleListActivity" />
+        <activity
+            android:name=".NavigationActivity"
+            android:label="@string/title_activity_navigation">
+
+        </activity>
+        <activity android:name=".ListActivity"/>
     </application>
 
 </manifest>
