@@ -1,47 +1,33 @@
 package fr.edouardkerhir.geolocmap;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.android.volley.toolbox.Volley.*;
+class CandySingleton {
 
-class CandySingleton extends Context {
     private static final CandySingleton ourInstance = new CandySingleton();
-    private ArrayList<Candy> CandyArrayList = new ArrayList<>();
+    private ArrayList<CandyModel> CandyArrayList = new ArrayList<>();
+
+    private CandySingleton() {
+    }
 
     static CandySingleton getInstance() {
         return ourInstance;
     }
 
-    private CandySingleton() {
-    }
+    public ArrayList<CandyModel> getCandyArrayList() {
 
-    public ArrayList<Candy> getCandyArrayList() {
-
-        CandyArrayList.add(new Candy("Tagada", R.drawable.tagada));
-        CandyArrayList.add(new Candy("Dragibus", R.drawable.dragibus));
-        CandyArrayList.add(new Candy("Schtrumpf", R.drawable.schtroumpfs));
-        CandyArrayList.add(new Candy("Crocodile", R.drawable.crocodile));
-        CandyArrayList.add(new Candy("Chamalow", R.drawable.chama));
-        CandyArrayList.add(new Candy("Pastille Vichy", R.drawable.pastille_du_bassin_de_vichy));
-        CandyArrayList.add(new Candy("Reglisse", R.drawable.baton1));
-        CandyArrayList.add(new Candy("Koala", R.drawable.chamalow));
-        CandyArrayList.add(new Candy("Scoubidou", R.drawable.lasso_scoubidou));
-        CandyArrayList.add(new Candy("Coca", R.drawable.haribo_happy_cola_bulk));
+        CandyArrayList.add(new CandyModel("Tagada", R.drawable.tagada, 5.39));
+        CandyArrayList.add(new CandyModel("Dragibus", R.drawable.dragibus, 4.23));
+        CandyArrayList.add(new CandyModel("Schtrumpf", R.drawable.schtroumpfs, 6.19));
+        CandyArrayList.add(new CandyModel("Crocodile", R.drawable.crocodile, 6.19));
+        CandyArrayList.add(new CandyModel("Chamalow", R.drawable.chama, 2.00));
+        CandyArrayList.add(new CandyModel("Pastille Vichy", R.drawable.pastille_du_bassin_de_vichy, 2.50));
+        CandyArrayList.add(new CandyModel("Reglisse", R.drawable.baton1, 8.57));
+        CandyArrayList.add(new CandyModel("Koala", R.drawable.chamalow, 6.19));
+        CandyArrayList.add(new CandyModel("Scoubidou", R.drawable.lasso_scoubidou, 6.66));
+        CandyArrayList.add(new CandyModel("Coca", R.drawable.haribo_happy_cola_bulk, 5.71));
 
         return CandyArrayList;
     }
