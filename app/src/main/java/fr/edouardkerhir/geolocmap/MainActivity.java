@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -21,6 +22,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
 import android.widget.ListView;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     final static double TOULOUSE_LONGITUDE_BORDURES_BOT = 1.411854;
     final static double TOULOUSE_LATITUDE_BORDURES_TOP = 43.642094;
     final static double TOULOUSE_LONGITUDE_BORDURES_TOP = 1.480995;
+    final static int DISTANCE_POUR_CHOPPER_LES_BONBONS = 50;
     final static int ZOOM_LVL_BY_DEFAULT = 13;
     private PopupWindow popUp;
     private LocationManager mLocationManager = null;
@@ -283,6 +286,8 @@ public class MainActivity extends AppCompatActivity {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(PlacePosition);
             Marker marker = superMap.addMarker(markerOptions);
+            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.redicons);
+            marker.setIcon(icon);
             marker.setTag(thisPlace);
             mMarkers.add(marker);
             boolean focus = false;
@@ -297,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void popupBuilder(Marker marker) {
+    private void popupBuilder(final Marker marker) {
 
         Display display = getWindowManager().getDefaultDisplay();
 
@@ -306,16 +311,18 @@ public class MainActivity extends AppCompatActivity {
         int width = (int) Math.round(size.x * 0.7);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popUpView = inflater.inflate(R.layout.custom_info_window, null);
+        final View popUpView = inflater.inflate(R.layout.custom_info_window, null);
 
         //creation fenetre popup
         boolean focusable = true;
         popUp = new PopupWindow(popUpView, width, ListPopupWindow.WRAP_CONTENT, focusable);
         //show popup
         popUp.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
+        popUpView.setBackgroundResource(R.drawable.fond_popup);
 
         final Places place = (Places) marker.getTag();
         TextView placeName = popUpView.findViewById(R.id.place_name);
+        placeName.setBackgroundResource(R.drawable.fond_title_popup);
         placeName.setText(place.getName());
 
         ListView candyList = popUpView.findViewById(R.id.candy_listview);
@@ -323,5 +330,37 @@ public class MainActivity extends AppCompatActivity {
 
         CandyAdapter adapter = new CandyAdapter(this, candyListItem);
         candyList.setAdapter(adapter);
+
+        final Button getCandy = popUpView.findViewById(R.id.button_get_candy);
+        getCandy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (place.isVisited()) {
+                    getCandy.setText("tu as déjà récupéré ces bonbons fdp!");
+                } else {
+                    if (getDistanceFromMarker(marker) < DISTANCE_POUR_CHOPPER_LES_BONBONS) {
+                        Toast.makeText(MainActivity.this, "Tu es suffisament proche !", Toast.LENGTH_LONG).show();
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.greyicons);
+                        marker.setIcon(icon);
+                        place.setVisited(true);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Tu es trop loin !", Toast.LENGTH_LONG).show();
+                    }
+                    popUp.dismiss();
+                }
+            }
+        });
+    }
+
+    public float getDistanceFromMarker(Marker marker){
+        float distance;
+        Places thisPlace = (Places) marker.getTag();
+        Location thisPlaceLocation = new Location("");
+        thisPlaceLocation.setLatitude(thisPlace.getLatitude());
+        thisPlaceLocation.setLongitude(thisPlace.getLongitude());
+        distance = thisPlaceLocation.distanceTo(userLocation);
+
+        return distance;
     }
 }
