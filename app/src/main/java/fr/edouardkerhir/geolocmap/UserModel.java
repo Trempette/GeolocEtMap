@@ -2,10 +2,10 @@ package fr.edouardkerhir.geolocmap;
 
 public class UserModel {
     private String nom;
-    private int poid;
-    private String candy;
+    private double poid;
+    private int candy;
 
-    public UserModel(String nom, int poid, String candy) {
+    public UserModel(String nom, double poid, int candy) {
         this.nom = nom;
         this.poid = poid;
         this.candy = candy;
@@ -22,19 +22,19 @@ public class UserModel {
         this.nom = nom;
     }
 
-    public int getPoid() {
+    public double getPoid() {
         return poid;
     }
 
-    public void setPoid(int poid) {
+    public void setPoid(double poid) {
         this.poid = poid;
     }
 
-    public String getCandy() {
+    public int getCandy() {
         return candy;
     }
 
-    public void setCandy(String candy) {
+    public void setCandy(int candy) {
         this.candy = candy;
     }
 }
