@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
     final static double TOULOUSE_LATITUDE_BORDURES_TOP = 43.642094;
     final static double TOULOUSE_LONGITUDE_BORDURES_TOP = 1.480995;
     final static int DISTANCE_POUR_CHOPPER_LES_BONBONS = 50;
-    final static int ZOOM_LVL_BY_DEFAULT = 13;
     private PopupWindow popUp;
     private LocationManager mLocationManager = null;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -158,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
         // zoome la camera sur la dernière position connue
         mZoom = superMap.getCameraPosition().zoom;
         LatLng latLong = new LatLng(location.getLatitude(), location.getLongitude());
-
         superMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, mZoom));
 
 
@@ -249,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 googleMap.setLatLngBoundsForCameraTarget(toulouseBounds);
                 // By default, map zoom on Toulouse
                 LatLng toulouse = new LatLng(TOULOUSE_LATITUDE, TOULOUSE_LONGITUDE);
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(toulouse, ZOOM_LVL_BY_DEFAULT));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(toulouse, mZoom));
 
                 //Configuration map
                 UiSettings mMapConfig = googleMap.getUiSettings();
@@ -366,14 +364,19 @@ public class MainActivity extends AppCompatActivity {
 
         CandyAdapter adapter = new CandyAdapter(this, candyListItem);
         candyList.setAdapter(adapter);
-
         final Button getCandy = popUpView.findViewById(R.id.button_get_candy);
+
+        if (place.isVisited()){
+            getCandy.setText("tu as déjà récupéré ces bonbons fdp!");
+        }
+
+
         getCandy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (place.isVisited()) {
-                    getCandy.setText("tu as déjà récupéré ces bonbons fdp!");
+
                 } else {
                     if (getDistanceFromMarker(marker) < DISTANCE_POUR_CHOPPER_LES_BONBONS) {
                         Toast.makeText(MainActivity.this, "Tu es suffisament proche !", Toast.LENGTH_LONG).show();
