@@ -39,12 +39,9 @@ public class ListAdapter extends ArrayAdapter<CandyModel> {
         final CandyModel candy = getItem(position);
         viewHolder = (ListViewHolder) convertView.getTag();
         viewHolder.candyName.setText(candy.getNom());
-        viewHolder.sport.setText(club.getSport());
+        viewHolder.nbCandy.setText(candy.getNbCandy());
         viewHolder.ivCandy.setImageDrawable(getContext().getResources().getDrawable(candy.getImage()));
-        viewHolder.tvWebsite.setText(club.getWebsite());
-        if (viewHolder.tvWebsite.getText().length() == 0) {
-            viewHolder.tvWebsite.setText(R.string.tvWebsite);
-        }
+        viewHolder.poidCandy.setText((int) candy.getPoids());
 
         final ListViewHolder finalViewHolder = viewHolder;
         viewHolder.popUpButton.setOnClickListener(new View.OnClickListener() {
