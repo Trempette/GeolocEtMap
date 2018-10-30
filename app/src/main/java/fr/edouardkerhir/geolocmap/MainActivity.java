@@ -6,24 +6,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListPopupWindow;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -37,14 +36,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -70,7 +66,10 @@ public class MainActivity extends AppCompatActivity {
     final static double TOULOUSE_LATITUDE_BORDURES_TOP = 43.642094;
     final static double TOULOUSE_LONGITUDE_BORDURES_TOP = 1.480995;
     final static int DISTANCE_POUR_CHOPPER_LES_BONBONS = 50;
+
     final static int ZOOM_LVL_BY_DEFAULT = 13;
+
+    private static final Object UserModel = new UserModel();
     private PopupWindow popUp;
     private LocationManager mLocationManager = null;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -82,12 +81,36 @@ public class MainActivity extends AppCompatActivity {
     private float mZoom;
     private ArrayList<Marker> mMarkers;
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    return true;
+                case R.id.navigation_dashboard:
+                    Intent goToProfil = new Intent(MainActivity.this, ProfilActivity.class);
+                    startActivity(goToProfil);
+                    return true;
+                case R.id.navigation_notifications:
+                    Intent goToList = new Intent(MainActivity.this, ListActivity.class);
+                    startActivity(goToList);
+                    return true;
+            }
+            return false;
+        }
+    };
+
     //Création de l'activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mZoom = 18.0f;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         requestQueue = Volley.newRequestQueue(this);
         placesAdresses = new ArrayList<>();
         mMarkers = new ArrayList<>();
@@ -158,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
         // zoome la camera sur la dernière position connue
         mZoom = superMap.getCameraPosition().zoom;
         LatLng latLong = new LatLng(location.getLatitude(), location.getLongitude());
-
         superMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, mZoom));
 
 
@@ -249,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 googleMap.setLatLngBoundsForCameraTarget(toulouseBounds);
                 // By default, map zoom on Toulouse
                 LatLng toulouse = new LatLng(TOULOUSE_LATITUDE, TOULOUSE_LONGITUDE);
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(toulouse, ZOOM_LVL_BY_DEFAULT));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(toulouse, mZoom));
 
                 //Configuration map
                 UiSettings mMapConfig = googleMap.getUiSettings();
@@ -366,14 +388,19 @@ public class MainActivity extends AppCompatActivity {
 
         CandyAdapter adapter = new CandyAdapter(this, candyListItem);
         candyList.setAdapter(adapter);
-
         final Button getCandy = popUpView.findViewById(R.id.button_get_candy);
+
+        if (place.isVisited()){
+            getCandy.setText("tu as déjà récupéré ces bonbons fdp!");
+        }
+
+
         getCandy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (place.isVisited()) {
-                    getCandy.setText("tu as déjà récupéré ces bonbons fdp!");
+
                 } else {
                     if (getDistanceFromMarker(marker) < DISTANCE_POUR_CHOPPER_LES_BONBONS) {
                         Toast.makeText(MainActivity.this, "Tu es suffisament proche !", Toast.LENGTH_LONG).show();
