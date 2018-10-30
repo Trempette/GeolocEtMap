@@ -17,24 +17,24 @@ public class ImageAdapter extends PagerAdapter {
         if(bonbon.equals("Tagada")) {
             list = new int[]
                     {R.drawable.tagada,
-                    R.drawable.tagada1,
-                    R.drawable.tagada2};
+                            R.drawable.tagada1,
+                            R.drawable.tagada2};
 
         }else if(bonbon.equals("Dagibus")) {
             list = new int[]
                     {R.drawable.dragibus,
-                    R.drawable.dragibus1,
+                            R.drawable.dragibus1,
                             R.drawable.dragibus2};
         }else if(bonbon.equals("Schtrumpf")) {
             list = new int[]
                     {R.drawable.schtroumpfs,
-                    R.drawable.schtroumpfs1,
-                    R.drawable.schtroumpfs2};
+                            R.drawable.schtroumpfs1,
+                            R.drawable.schtroumpfs2};
         }else if(bonbon.equals("Crocodile")) {
             list = new int[]
                     {R.drawable.crocodile,
                             R.drawable.crocodile1,
-                    R.drawable.crocodile2};
+                            R.drawable.crocodile2};
         }else if(bonbon.equals("Chamalow")) {
             list = new int[]
                     {R.drawable.chamlow,
@@ -43,13 +43,13 @@ public class ImageAdapter extends PagerAdapter {
         }else if(bonbon.equals("Carambar")) {
             list = new int[]
                     {R.drawable.carambar,
-                     R.drawable.carambar1,
-                     R.drawable.carambar2};
+                            R.drawable.carambar1,
+                            R.drawable.carambar2};
         }else if(bonbon.equals("Reglisse")) {
             list = new int[]
                     {R.drawable.baton,
                             R.drawable.baton1,
-                    R.drawable.baton2};
+                            R.drawable.baton2};
         }else if(bonbon.equals("Koala")) {
             list = new int[]
                     {R.drawable.lutti,
