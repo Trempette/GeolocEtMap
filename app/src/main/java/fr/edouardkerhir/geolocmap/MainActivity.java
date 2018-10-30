@@ -368,12 +368,17 @@ public class MainActivity extends AppCompatActivity {
         candyList.setAdapter(adapter);
 
         final Button getCandy = popUpView.findViewById(R.id.button_get_candy);
+        if (place.isVisited()){
+            getCandy.setText("tu as déjà récupéré ces bonbons fdp!");
+        }
+
+
         getCandy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (place.isVisited()) {
-                    getCandy.setText("tu as déjà récupéré ces bonbons fdp!");
+                    popUp.dismiss();
                 } else {
                     if (getDistanceFromMarker(marker) < DISTANCE_POUR_CHOPPER_LES_BONBONS) {
                         Toast.makeText(MainActivity.this, "Tu es suffisament proche !", Toast.LENGTH_LONG).show();
