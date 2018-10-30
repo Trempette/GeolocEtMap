@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -12,7 +13,8 @@ import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -55,6 +58,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     final static double TOULOUSE_LONGITUDE_BORDURES_TOP = 1.480995;
     final static int DISTANCE_POUR_CHOPPER_LES_BONBONS = 50;
     final static int ZOOM_LVL_BY_DEFAULT = 13;
+
+    private static final Object UserModel = new UserModel();
     private PopupWindow popUp;
     private LocationManager mLocationManager = null;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -82,12 +88,37 @@ public class MainActivity extends AppCompatActivity {
     private float mZoom;
     private ArrayList<Marker> mMarkers;
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+
+                    return true;
+                case R.id.navigation_dashboard:
+                    Intent goToProfil = new Intent(MainActivity.this, ProfilActivity.class);
+                    startActivity(goToProfil);
+                    return true;
+                case R.id.navigation_notifications:
+                    Intent goToList = new Intent(MainActivity.this, ListActivity.class);
+                    startActivity(goToList);
+                    return true;
+            }
+            return false;
+        }
+    };
+
     //Création de l'activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mZoom = 18.0f;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         requestQueue = Volley.newRequestQueue(this);
         placesAdresses = new ArrayList<>();
         mMarkers = new ArrayList<>();
