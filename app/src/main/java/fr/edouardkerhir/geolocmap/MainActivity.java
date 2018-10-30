@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -51,6 +53,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private float mZoom;
     private ArrayList<Marker> mMarkers;
-
+    private String placeAdressJsonString;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -110,6 +113,10 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        placeAdressJsonString = sharedPreferences.getString("placesJson", "");
 
         requestQueue = Volley.newRequestQueue(this);
         placesAdresses = new ArrayList<>();
@@ -316,7 +323,20 @@ public class MainActivity extends AppCompatActivity {
 
                                 placesAdresses.add(new Places(name, adress, longitude, latitude, nbCandy, candyThisPlace));
                             }
-                            createMarkers(placesAdresses);
+                            Gson gson = new Gson();
+
+                            if (placeAdressJsonString.isEmpty()){
+                                placeAdressJsonString = gson.toJson(placesAdresses);
+                                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("placesJson", placeAdressJsonString);
+                                editor.commit();
+                                createMarkers(placesAdresses);
+                            }
+                            else {
+                                placesAdresses = (gson.fromJson(placeAdressJsonString, ));
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -427,3 +447,5 @@ public class MainActivity extends AppCompatActivity {
         return distance;
     }
 }
+
+
