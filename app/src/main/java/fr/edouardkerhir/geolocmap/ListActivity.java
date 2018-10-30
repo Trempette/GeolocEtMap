@@ -1,5 +1,5 @@
 package fr.edouardkerhir.geolocmap;
-
+import android.widget.ListView;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 public class ListActivity extends AppCompatActivity {
-
+    private ListView mListTrip;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -35,9 +35,16 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        getCandy();
+    }
+
+    public void getCandy() {
+
+        ListAdapter adapter = new ListAdapter(ListActivity.this, CandySingleton.getInstance().getCandyArrayList());
+        mListTrip = findViewById(R.id.candy_list);
+        mListTrip.setAdapter(adapter);
 
     }
 }

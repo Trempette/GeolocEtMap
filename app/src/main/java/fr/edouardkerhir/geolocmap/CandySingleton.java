@@ -7,6 +7,7 @@ import java.util.ArrayList;
 class CandySingleton {
 
     private static final CandySingleton ourInstance = new CandySingleton();
+
     private ArrayList<CandyModel> CandyArrayList = new ArrayList<>();
 
     private CandySingleton() {
@@ -17,7 +18,7 @@ class CandySingleton {
     }
 
     public ArrayList<CandyModel> getCandyArrayList() {
-
+        CandyArrayList.clear();
         CandyArrayList.add(new CandyModel("Tagada", R.drawable.tagada, 5.39));
         CandyArrayList.add(new CandyModel("Dragibus", R.drawable.dragibus, 4.23));
         CandyArrayList.add(new CandyModel("Schtrumpf", R.drawable.schtroumpfs, 6.19));
