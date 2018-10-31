@@ -10,19 +10,29 @@ public class Places {
     private boolean visited;
     private int nbInstanceCandy;
     private ArrayList<bonbonItemInfoWindow> candyPlaces;
+    private int level;
 
 
-    public Places(String name, String adress, double longitude, double latitude, int nbInstanceCandy, ArrayList<bonbonItemInfoWindow> candyPlaces) {
+    public Places(String name, String adress, double longitude, double latitude, int nbInstanceCandy, ArrayList<bonbonItemInfoWindow> candyPlaces, int level) {
         this.name = name;
         this.adress = adress;
         this.longitude = longitude;
         this.latitude = latitude;
         this.nbInstanceCandy = nbInstanceCandy;
         this.candyPlaces = candyPlaces;
+        this.level = level;
     }
 
     public Places() {
 
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public ArrayList<bonbonItemInfoWindow> getCandyPlaces() {

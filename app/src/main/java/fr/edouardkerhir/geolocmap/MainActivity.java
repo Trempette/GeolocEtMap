@@ -333,13 +333,22 @@ public class MainActivity extends AppCompatActivity {
                                 double latitude = coordinates.getDouble(1);
                                 int nbCandy = (int) (Math.random() * 4 + 1);
                                 ArrayList<bonbonItemInfoWindow> candyThisPlace = new ArrayList<>();
-                                for (int j = 0; j < nbCandy; j++) {
-                                    int index = (int) (Math.random() * 9 + 1);
-                                    int nbForIndex = (int) (Math.random() * 3 + 2);
+                                int levelPlace = (int) (Math.random()*3+1);
+                                int index = 0;
+                                for (int j=0; j<nbCandy; j++){
+                                    switch(nbCandy){
+                                        case 1: index = (int) (Math.random()*9+1); break;
+                                        case 2: index = (int) (Math.random()*9+1); break;
+                                        case 3: index = (int) (Math.random()*9+1); break;
+                                    }
+
+
+                                    int nbForIndex = (int) (Math.random()*3+2);
                                     candyThisPlace.add(new bonbonItemInfoWindow(index, nbForIndex));
                                 }
 
-                                placesAdresses.add(new Places(name, adress, longitude, latitude, nbCandy, candyThisPlace));
+
+                                placesAdresses.add(new Places(name, adress, longitude, latitude, nbCandy, candyThisPlace, levelPlace));
                             }
                             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -392,12 +401,23 @@ public class MainActivity extends AppCompatActivity {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(PlacePosition);
             Marker marker = superMap.addMarker(markerOptions);
-            BitmapDescriptor icon;
+            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.candyiconcolor);
             if(!thisPlace.isVisited()){
-                icon = BitmapDescriptorFactory.fromResource(R.drawable.candyiconcolor);
+                switch(thisPlace.getLevel()){
+                    case 1:
+                        icon = BitmapDescriptorFactory.fromResource(R.drawable.candyiconbronze);
+                        break;
+                    case 2:
+                        icon = BitmapDescriptorFactory.fromResource(R.drawable.candyicongrey);
+                        break;
+                    case 3:
+                        icon = BitmapDescriptorFactory.fromResource(R.drawable.candyicongold);
+                        break;
+                }
+
             }
             else {
-                icon = BitmapDescriptorFactory.fromResource(R.drawable.candyicongrey);
+                icon = BitmapDescriptorFactory.fromResource(R.drawable.candyiconblur);
             }
 
 
@@ -460,7 +480,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     if (getDistanceFromMarker(marker) < DISTANCE_POUR_CHOPPER_LES_BONBONS) {
                         Toast.makeText(MainActivity.this, "Tu es suffisament proche !", Toast.LENGTH_LONG).show();
-                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.candyicongrey);
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.candyiconblur);
                         marker.setIcon(icon);
                         place.setVisited(true);
                         Gson gson = new Gson();
