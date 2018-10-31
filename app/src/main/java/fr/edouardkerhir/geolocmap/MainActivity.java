@@ -52,6 +52,7 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,6 +110,18 @@ public class MainActivity extends AppCompatActivity {
         mZoom = 17.0f;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //create shared pref object
+        SharedPreferences sharedPreferences = getSharedPreferences("mypref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        //create gson object
+        Gson gson = new Gson();
+        //convert userModel into string
+        UserModel userModel = new UserModel();
+        String user = gson.toJson(userModel);
+        editor.putString("currentUser", user);
+        editor.commit();
+
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

@@ -1,25 +1,18 @@
 package fr.edouardkerhir.geolocmap;
-<<<<<<< Updated upstream
 import android.media.MediaPlayer;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
-=======
-
->>>>>>> Stashed changes
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-<<<<<<< Updated upstream
 import android.widget.TextView;
-=======
-import android.widget.ListView;
->>>>>>> Stashed changes
+
 
 public class ListActivity extends AppCompatActivity {
     private ListView mListTrip;
