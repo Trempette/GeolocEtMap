@@ -22,7 +22,7 @@ public class ImageAdapter extends PagerAdapter {
                             R.drawable.tagada1,
                             R.drawable.tagada2};
 
-        }else if(bonbon.equals("Dagibus")) {
+        }else if(bonbon.equals("Dragibus")) {
             list = new int[]
                     {R.drawable.dragibus,
                             R.drawable.dragibus1,
@@ -49,9 +49,9 @@ public class ImageAdapter extends PagerAdapter {
                             R.drawable.carambar2};
         }else if(bonbon.equals("Reglisse")) {
             list = new int[]
-                    {R.drawable.baton,
+                    {R.drawable.baton2,
                             R.drawable.baton1,
-                            R.drawable.baton2};
+                            R.drawable.baton};
         }else if(bonbon.equals("Koala")) {
             list = new int[]
                     {R.drawable.lutti,

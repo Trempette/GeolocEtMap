@@ -44,10 +44,9 @@ public class ListActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.vp);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-       /* monsterBuilder(1);
-        addListenerOnSlider(viewPager);*/
         getCandy();
-
+      /*  poidBuilder(1);
+        addListenerOnSlider(viewPager);*/
     }
 
     public void getCandy() {
@@ -57,45 +56,4 @@ public class ListActivity extends AppCompatActivity {
         mListTrip.setAdapter(adapter);
 
     }
-   /* public void monsterBuilder(int indexEvolution) {
-
-        //INITIALISATION VARIABLES
-        TextView poid = findViewById(R.id.tv_poid_candy);
-
-        //SETTING STATS
-        if (poid != null) {
-            String candyPoid = (String) poid.getText();
-            if (indexEvolution == 1) {
-                poid.setText(candyPoid);
-
-            } else if (indexEvolution == 2) {
-                poid.setText(String.valueOf(Integer.parseInt(candyPoid) * 2));
-
-            } else {
-                poid.setText(String.valueOf(Integer.parseInt(candyPoid) * 5));
-
-            }
-
-        }
-    }
-
-    public void addListenerOnSlider(ViewPager viewPager) {
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            public void onPageScrollStateChanged(int state) {
-            }
-
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            public void onPageSelected(int position) {
-
-                monsterBuilder(position + 1);
-
-            }
-        });
-
-    }*/
-
-
 }
