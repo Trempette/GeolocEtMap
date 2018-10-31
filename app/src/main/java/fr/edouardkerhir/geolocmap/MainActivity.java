@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -53,12 +54,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
-
+import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+
+import static java.util.Arrays.asList;
 
 public class MainActivity extends AppCompatActivity {
     final static double TOULOUSE_LATITUDE = 43.6043;
@@ -83,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private float mZoom;
     private ArrayList<Marker> mMarkers;
     private UserModel user = new UserModel();
-
+    private String placeAdressJsonString;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -110,9 +114,9 @@ public class MainActivity extends AppCompatActivity {
         mZoom = 17.0f;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //create shared pref object
-        SharedPreferences sharedPreferences = getSharedPreferences("mypref", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         //create gson object
         Gson gson = new Gson();
@@ -125,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        placeAdressJsonString = sharedPreferences.getString("placesJson", "");
+
         requestQueue = Volley.newRequestQueue(this);
         placesAdresses = new ArrayList<>();
         mMarkers = new ArrayList<>();
@@ -302,6 +309,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void requeteAPI(String urlRequete) {
         // Création de la requête vers l'API, ajout des écouteurs pour les réponses et erreurs possibles
+
+
+
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, urlRequete, null,
                 new Response.Listener<JSONObject>() {
@@ -330,7 +341,30 @@ public class MainActivity extends AppCompatActivity {
 
                                 placesAdresses.add(new Places(name, adress, longitude, latitude, nbCandy, candyThisPlace));
                             }
-                            createMarkers(placesAdresses);
+                            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt("placesJsonNb", placesAdresses.size());
+                            Gson gson = new Gson();
+
+                            if (placeAdressJsonString.isEmpty()){
+                                placeAdressJsonString = gson.toJson(placesAdresses);
+                                editor = sharedPreferences.edit();
+                                editor.putString("placesJson", placeAdressJsonString);
+                                editor.commit();
+                                createMarkers(placesAdresses);
+                            }
+                            else {
+
+                                Type listType = new TypeToken<ArrayList<Places>>(){}.getType();
+
+
+                                placesAdresses = (gson.fromJson(placeAdressJsonString,listType));
+
+
+                                boolean bool = true;
+                                createMarkers(placesAdresses);
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -358,7 +392,15 @@ public class MainActivity extends AppCompatActivity {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(PlacePosition);
             Marker marker = superMap.addMarker(markerOptions);
-            BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.candyiconcolor);
+            BitmapDescriptor icon;
+            if(!thisPlace.isVisited()){
+                icon = BitmapDescriptorFactory.fromResource(R.drawable.candyiconcolor);
+            }
+            else {
+                icon = BitmapDescriptorFactory.fromResource(R.drawable.candyicongrey);
+            }
+
+
             marker.setIcon(icon);
             marker.setTag(thisPlace);
             mMarkers.add(marker);
@@ -421,6 +463,14 @@ public class MainActivity extends AppCompatActivity {
                         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.candyicongrey);
                         marker.setIcon(icon);
                         place.setVisited(true);
+                        Gson gson = new Gson();
+                        placeAdressJsonString = gson.toJson(placesAdresses);
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor = sharedPreferences.edit();
+                        editor.putString("placesJson", placeAdressJsonString);
+                        editor.commit();
+
                     } else {
                         Toast.makeText(MainActivity.this, "Tu es trop loin !", Toast.LENGTH_LONG).show();
                     }
@@ -440,4 +490,8 @@ public class MainActivity extends AppCompatActivity {
 
         return distance;
     }
+
+
 }
+
+
