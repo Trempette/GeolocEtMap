@@ -21,6 +21,10 @@ public class Places {
         this.candyPlaces = candyPlaces;
     }
 
+    public Places() {
+
+    }
+
     public ArrayList<bonbonItemInfoWindow> getCandyPlaces() {
         return candyPlaces;
     }
