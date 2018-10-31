@@ -6,12 +6,13 @@ public class UserModel {
     private double poid = 0.0;
     private int candy = 0;
     private int level = 0;
-    private ArrayList<CandyModel> usersCandies = null;
+    private ArrayList<CandyModel> usersCandies = initArray();
 
-    public UserModel(double poid, int candy, ArrayList usersCandies) {
+
+    public UserModel(double poid, int candy,int level, ArrayList usersCandies) {
         this.poid = poid;
         this.candy = candy;
-        this.level=0;
+        this.level= level;
         this.usersCandies= usersCandies;
     }
 
@@ -48,5 +49,11 @@ public class UserModel {
 
     public void setUsersCandies(ArrayList<CandyModel> usersCandies) {
         this.usersCandies = usersCandies;
+    }
+
+    public ArrayList<CandyModel> initArray(){
+        CandySingleton candySingleton = CandySingleton.getInstance();
+        usersCandies = candySingleton.getCandyArrayList();
+        return usersCandies;
     }
 }

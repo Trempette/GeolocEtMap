@@ -10,5 +10,5 @@
     <string name="title_activity_navigation">NavigationActivity</string>
     <string name="title_home">La carte</string>
     <string name="title_dashboard">Mon Profil</string>
-    <string name="title_notifications">Ma Citrouille</string>
+    <string name="title_notifications">Les Bonbons</string>
 </resources>

@@ -36,7 +36,7 @@ public class CitrouilleAdapter extends ArrayAdapter<CandyModel> {
         candyName.setText(candy.getNom());
 
         TextView candyNumber = convertView.findViewById(R.id.tv_nb_candy);
-        candyNumber.setText(candy.getNbCandy());
+        candyNumber.setText(String.valueOf(candy.getNbCandy()));
 
         return convertView;
     }

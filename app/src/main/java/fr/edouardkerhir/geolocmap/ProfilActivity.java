@@ -3,13 +3,13 @@ package fr.edouardkerhir.geolocmap;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -38,11 +38,9 @@ public class ProfilActivity extends AppCompatActivity {
             return false;
         }
     };
-    private String    json;
     private TextView tv_nbBonbon;
     private TextView tv_pdBonbon;
     private TextView tvLevel;
-    private EditText etpseudo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,16 +55,42 @@ public class ProfilActivity extends AppCompatActivity {
         tv_pdBonbon = findViewById(R.id.tv_pdBonbon);
         tvLevel = findViewById(R.id.tv_level);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("mypref", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         Gson gson = new Gson();
         String currentUser = sharedPreferences.getString("currentUser", null);
         UserModel userModel = gson.fromJson(currentUser, UserModel.class);
 
-        tvLevel.setText(String.valueOf(userModel.getLevel()));
+        userModel.setLevel(getlevelUser(userModel.getCandy()));
+        tvLevel.setText("Level : "+String.valueOf(userModel.getLevel()));
         int nbBonbon = userModel.getCandy();
         double pdBonbon = userModel.getPoid();
         tv_nbBonbon.setText("Vous avez " + nbBonbon + " bonbons!");
         tv_pdBonbon.setText("Vous avez un poids de " + pdBonbon + "g de bonbons!");
+
+        /*switch (userModel.getLevel()){
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+            case "":
+                break;
+        }*/
 
         Button btCitrouille = findViewById(R.id.bt_citrouille);
         btCitrouille.setOnClickListener(new View.OnClickListener() {
@@ -81,10 +105,9 @@ public class ProfilActivity extends AppCompatActivity {
 
     }
 
-    public int getlevelUser(){
+    public int getlevelUser(int nbCandy){
 
-        UserModel user = new UserModel();
-        int nbCandy = user.getCandy();
+
         int level = 0;
 
         if (nbCandy<10){
