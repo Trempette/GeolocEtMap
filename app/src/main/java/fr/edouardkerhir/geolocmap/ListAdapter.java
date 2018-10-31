@@ -62,8 +62,11 @@ public class ListAdapter extends ArrayAdapter<CandyModel> {
         imageAdapter = new ImageAdapter(getContext(),bonbon);
         viewHolder.viewp.setAdapter(imageAdapter);
 
+
         return convertView;
     }
+
+
     class ListViewHolder {
         public TextView candyName;
         public TextView nbCandy;
