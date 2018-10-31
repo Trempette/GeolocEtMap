@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class ImageAdapter extends PagerAdapter {
     private int[] list;
@@ -17,44 +19,54 @@ public class ImageAdapter extends PagerAdapter {
         if(bonbon.equals("Tagada")) {
             list = new int[]
                     {R.drawable.tagada,
-                    R.drawable.dragibus};
+                            R.drawable.tagada1,
+                            R.drawable.tagada2};
 
-        }else if(bonbon.equals("Dagibus")) {
+        }else if(bonbon.equals("Dragibus")) {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.dragibus};
+                    {R.drawable.dragibus,
+                            R.drawable.dragibus1,
+                            R.drawable.dragibus2};
         }else if(bonbon.equals("Schtrumpf")) {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.dragibus};
+                    {R.drawable.schtroumpfs,
+                            R.drawable.schtroumpfs1,
+                            R.drawable.schtroumpfs2};
         }else if(bonbon.equals("Crocodile")) {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.dragibus};
+                    {R.drawable.crocodile,
+                            R.drawable.crocodile1,
+                            R.drawable.crocodile2};
         }else if(bonbon.equals("Chamalow")) {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.dragibus};
-        }else if(bonbon.equals("Pastille Vichy")) {
+                    {R.drawable.chamlow,
+                            R.drawable.chamlow1,
+                            R.drawable.chamlow2};
+        }else if(bonbon.equals("Carambar")) {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.dragibus};
+                    {R.drawable.carambar,
+                            R.drawable.carambar1,
+                            R.drawable.carambar2};
         }else if(bonbon.equals("Reglisse")) {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.dragibus};
+                    {R.drawable.baton2,
+                            R.drawable.baton1,
+                            R.drawable.baton};
         }else if(bonbon.equals("Koala")) {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.dragibus};
+                    {R.drawable.lutti,
+                            R.drawable.lutti1,
+                            R.drawable.lutti2};
         }else if(bonbon.equals("Scoubidou")) {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.dragibus};
+                    {R.drawable.lasso,
+                            R.drawable.lasso1,
+                            R.drawable.lasso2};
         }else {
             list = new int[]
-                    {R.drawable.tagada,
-                            R.drawable.lasso_scoubidou};
+                    {R.drawable.cola,
+                            R.drawable.cola1,
+                            R.drawable.cola2};
         }
     }
 
@@ -69,7 +81,7 @@ public class ImageAdapter extends PagerAdapter {
     }
 
     public Object instantiateItem(ViewGroup container, int position) {
-        ImageView candy = new ImageView(mContext);
+        CircleImageView candy = new CircleImageView(mContext);
         candy.setScaleType(ImageView.ScaleType.CENTER_CROP);
         candy.setImageDrawable(mContext.getResources().getDrawable(list[position]));
         container.addView(candy, 0);

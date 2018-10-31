@@ -14,12 +14,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class ListAdapter extends ArrayAdapter<CandyModel> {
 
     ImageAdapter imageAdapter;
+
 
     public ListAdapter(Context context, ArrayList<CandyModel> list) {
         super(context, 0, list);
@@ -58,12 +60,35 @@ public class ListAdapter extends ArrayAdapter<CandyModel> {
             }
         });
 
-        String bonbon = candy.getNom();
+        final String bonbon = candy.getNom();
         imageAdapter = new ImageAdapter(getContext(),bonbon);
         viewHolder.viewp.setAdapter(imageAdapter);
 
+        final ListViewHolder finalViewHolder1 = viewHolder;
+        viewHolder.viewp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                double totalPoid = candy.getPoids();
+                if (position == 1) {
+                    totalPoid = totalPoid * 2;
+                }else if (position == 2) {
+                    totalPoid = totalPoid * 5;
+                }
+                finalViewHolder1.poidCandy.setText(String.valueOf(totalPoid));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
         return convertView;
     }
+
     class ListViewHolder {
         public TextView candyName;
         public TextView nbCandy;
