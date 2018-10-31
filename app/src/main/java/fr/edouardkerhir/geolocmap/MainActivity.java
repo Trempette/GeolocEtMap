@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private float mZoom;
     private ArrayList<Marker> mMarkers;
+    private UserModel user = new UserModel();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -104,13 +106,12 @@ public class MainActivity extends AppCompatActivity {
     //Création de l'activity.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mZoom = 18.0f;
+        mZoom = 17.0f;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
         requestQueue = Volley.newRequestQueue(this);
         placesAdresses = new ArrayList<>();
         mMarkers = new ArrayList<>();
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // checkPermission : nom epxlicite. Permet de vérifier les permission GPS. si les autorisations sont là, lance initLocation. Sinon demande les autorisations.
-    public void checkPermission(){
+    public void checkPermission() {
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
 
-           initLocation();
+            initLocation();
 
         }
 
@@ -189,61 +190,61 @@ public class MainActivity extends AppCompatActivity {
 
     //initLocation : lance la gélocalisation après check des permissions GPS, si toutes les permissions sont accordées
     @SuppressLint({"Missing Permission", "MissingPermission"})
-    public void initLocation(){
-            superMap.setMyLocationEnabled(true); // position de l'utilisateur sur la carte
+    public void initLocation() {
+        superMap.setMyLocationEnabled(true); // position de l'utilisateur sur la carte
 
-            // récupération de la dernière position connue de l'utilisateur
-            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                // Logic to handle location object
-                                LatLng latLong = new LatLng(location.getLatitude(), location.getLongitude());
-                                CameraPosition cameraPosition = new CameraPosition.Builder()
-                                        .target(latLong) // Sets the center of the map to
-                                        .zoom(mZoom)                   // Sets the zoom
-                                        .bearing(0.0f) // Sets the orientation of the camera to east
-                                        .tilt(70.0f)    // Sets the tilt of the camera to 30 degrees
-                                        .build();    // Creates a CameraPosition from the builder
-                                superMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                                        cameraPosition));
-                                url = "https://api-adresse.data.gouv.fr/search/?q=citycode=31555&lng="+location.getLongitude()+"&lat="+location.getLatitude()+"&type=housenumber&limit=500";
-                                requeteAPI(url);
-                                //moveCamera(location);
-                                userLocation = location;
-                            }
+        // récupération de la dernière position connue de l'utilisateur
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            LatLng latLong = new LatLng(location.getLatitude(), location.getLongitude());
+                            CameraPosition cameraPosition = new CameraPosition.Builder()
+                                    .target(latLong) // Sets the center of the map to
+                                    .zoom(mZoom)                   // Sets the zoom
+                                    .bearing(0.0f) // Sets the orientation of the camera to east
+                                    .tilt(70.0f)    // Sets the tilt of the camera to 30 degrees
+                                    .build();    // Creates a CameraPosition from the builder
+                            superMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                                    cameraPosition));
+                            url = "https://api-adresse.data.gouv.fr/search/?q=citycode=31555&lng=" + location.getLongitude() + "&lat=" + location.getLatitude() + "&type=housenumber&limit=500";
+                            requeteAPI(url);
+                            //moveCamera(location);
+                            userLocation = location;
                         }
-                    });
+                    }
+                });
 
-            // modification de la position si l'utilisateur se déplace
-            mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-            final LocationListener locationListener = new LocationListener() {
-                public void onLocationChanged(Location location) {
-                    userLocation = location;
-                    moveCamera(location);
-                }
+        // modification de la position si l'utilisateur se déplace
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        final LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                userLocation = location;
+                moveCamera(location);
+            }
 
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-                    //méthode appelée au changement de status lors du déroulement de l'activité.
-                }
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+                //méthode appelée au changement de status lors du déroulement de l'activité.
+            }
 
-                public void onProviderEnabled(String provider) {
-                    //Méthode appelée lorsque l'activité est lancée et que le bonhomme désactive son gps durant le déroulement de l'activité. le con.
-                }
+            public void onProviderEnabled(String provider) {
+                //Méthode appelée lorsque l'activité est lancée et que le bonhomme désactive son gps durant le déroulement de l'activité. le con.
+            }
 
-                public void onProviderDisabled(String provider) {
-                    //Méthode appelée lorsque l'activité est lancée et que le bonhomme active son gps durant le déroulement de l'activité. Habile.
-                }
-            };
-            // initialisation de la vérification du déplacement par GPS et par réseau WIFI
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        }
+            public void onProviderDisabled(String provider) {
+                //Méthode appelée lorsque l'activité est lancée et que le bonhomme active son gps durant le déroulement de l'activité. Habile.
+            }
+        };
+        // initialisation de la vérification du déplacement par GPS et par réseau WIFI
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+    }
 
-    public void createMap(MapView map){
+    public void createMap(MapView map) {
 
         map.onResume();
         map.getMapAsync(new OnMapReadyCallback() {
@@ -286,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void requeteAPI(String urlRequete){
+    public void requeteAPI(String urlRequete) {
         // Création de la requête vers l'API, ajout des écouteurs pour les réponses et erreurs possibles
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, urlRequete, null,
@@ -306,11 +307,11 @@ public class MainActivity extends AppCompatActivity {
                                 String adress = properties.getString("label");
                                 double longitude = coordinates.getDouble(0);
                                 double latitude = coordinates.getDouble(1);
-                                int nbCandy = (int) (Math.random()*4+1);
+                                int nbCandy = (int) (Math.random() * 4 + 1);
                                 ArrayList<bonbonItemInfoWindow> candyThisPlace = new ArrayList<>();
-                                for (int j=0; j<nbCandy; j++){
-                                    int index = (int) (Math.random()*9+1);
-                                    int nbForIndex = (int) (Math.random()*3+2);
+                                for (int j = 0; j < nbCandy; j++) {
+                                    int index = (int) (Math.random() * 9 + 1);
+                                    int nbForIndex = (int) (Math.random() * 3 + 2);
                                     candyThisPlace.add(new bonbonItemInfoWindow(index, nbForIndex));
                                 }
 
@@ -416,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public float getDistanceFromMarker(Marker marker){
+    public float getDistanceFromMarker(Marker marker) {
         float distance;
         Places thisPlace = (Places) marker.getTag();
         Location thisPlaceLocation = new Location("");

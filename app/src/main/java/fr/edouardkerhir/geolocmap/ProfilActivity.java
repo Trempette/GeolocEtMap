@@ -59,8 +59,6 @@ public class ProfilActivity extends AppCompatActivity {
         Gson gson = new Gson();
         json = mPrefs.getString("MyObject", "");
         user = gson.fromJson(json, UserModel.class);
-        etpseudo = findViewById(R.id.et_pseudo);
-
         tv_nbBonbon = findViewById(R.id.tv_nbBonbon);
         tv_pdBonbon = findViewById(R.id.tv_pdBonbon);
         tvLevel = findViewById(R.id.tv_level);
@@ -74,6 +72,12 @@ public class ProfilActivity extends AppCompatActivity {
             tv_pdBonbon.setText("Vous avez un poids de " + nbBonbon + "g de bonbons!");
         }
 
+        etpseudo.setText(user.getNom());
+        tvLevel.setText(user.getLevel());
+        int nbBonbon = user.getCandy();
+        double pdBonbon = user.getPoid();
+        tv_nbBonbon.setText("Vous avez "+String.valueOf(nbBonbon)+" bonbons!");
+        tv_pdBonbon.setText("Vous avez un poids de "+String.valueOf(pdBonbon)+"g de bonbons!");
 
         Button btUpdate = findViewById(R.id.bt_update);
         btUpdate.setOnClickListener(new View.OnClickListener() {
@@ -97,13 +101,13 @@ public class ProfilActivity extends AppCompatActivity {
                         CitrouilleListActivity.class);
                 startActivity(goToCitrouilleList);
             }
-        });*/
+        });
 
 
     }
 
+    public int getlevelUser(){
 
-    /*public int getlevelUser(){
         UserModel user = new UserModel();
         int nbCandy = user.getCandy();
         int level = 0;
@@ -131,6 +135,6 @@ public class ProfilActivity extends AppCompatActivity {
         } else if (nbCandy>100) {
             level = 11;
         }
-        return  level;
-    }*/
+        return  level;*/
+    }
 }

@@ -17,14 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-
-        </activity>
-        <activity android:name=".ListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ListActivity">
+
         </activity>
 
         <meta-data
@@ -34,11 +34,6 @@
 
         <activity android:name=".ProfilActivity" />
         <activity android:name=".CitrouilleListActivity" />
-        <activity
-            android:name=".NavigationActivity"
-            android:label="@string/title_activity_navigation">
-
-        </activity>
 
     </application>
 

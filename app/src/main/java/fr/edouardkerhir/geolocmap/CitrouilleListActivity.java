@@ -11,14 +11,14 @@ import java.util.ArrayList;
 
 public class CitrouilleListActivity extends AppCompatActivity {
 
-    SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_citrouille_list);
         setTitle("Ma Citrouille");
-
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         Gson gson = new Gson();
         String json = mPrefs.getString("MyObject", "");
         UserModel user = gson.fromJson(json, UserModel.class);
