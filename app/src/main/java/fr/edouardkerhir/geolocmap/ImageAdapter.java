@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class ImageAdapter extends PagerAdapter {
     private int[] list;
@@ -79,7 +81,7 @@ public class ImageAdapter extends PagerAdapter {
     }
 
     public Object instantiateItem(ViewGroup container, int position) {
-        ImageView candy = new ImageView(mContext);
+        CircleImageView candy = new CircleImageView(mContext);
         candy.setScaleType(ImageView.ScaleType.CENTER_CROP);
         candy.setImageDrawable(mContext.getResources().getDrawable(list[position]));
         container.addView(candy, 0);

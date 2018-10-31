@@ -1,12 +1,11 @@
 package fr.edouardkerhir.geolocmap;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -39,7 +38,12 @@ public class ProfilActivity extends AppCompatActivity {
             return false;
         }
     };
-
+    private UserModel user;
+    private String    json;
+    private TextView tv_nbBonbon;
+    private TextView tv_pdBonbon;
+    private TextView tvLevel;
+    private EditText etpseudo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,24 +54,24 @@ public class ProfilActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        final SharedPreferences  mPrefs = getPreferences(MODE_PRIVATE);
+        final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
 
         Gson gson = new Gson();
-        final String json = mPrefs.getString("MyObject", "");
-        final UserModel user = gson.fromJson(json, UserModel.class);
-        final EditText etpseudo = findViewById(R.id.et_pseudo);
+        json = mPrefs.getString("MyObject", "");
+        user = gson.fromJson(json, UserModel.class);
+        etpseudo = findViewById(R.id.et_pseudo);
 
-        TextView tv_nbBonbon = findViewById(R.id.tv_nbBonbon);
-        TextView tv_pdBonbon = findViewById(R.id.tv_pdBonbon);
-        TextView tvLevel = findViewById(R.id.tv_level);
+        tv_nbBonbon = findViewById(R.id.tv_nbBonbon);
+        tv_pdBonbon = findViewById(R.id.tv_pdBonbon);
+        tvLevel = findViewById(R.id.tv_level);
 
-        /*if (user.getNom() != null) {
+     /*   if (user.getNom().length() < 0) {
             etpseudo.setText(user.getNom());
             tvLevel.setText(user.getLevel());
             int nbBonbon = user.getCandy();
-            double pdBonbon = user.getPoid();
-            tv_nbBonbon.setText("Vous avez "+nbBonbon+" bonbons!");
-            tv_pdBonbon.setText("Vous avez un poids de "+nbBonbon+"g de bonbons!");
+            //double pdBonbon = user.getPoid();
+            tv_nbBonbon.setText("Vous avez " + nbBonbon + " bonbons!");
+            tv_pdBonbon.setText("Vous avez un poids de " + nbBonbon + "g de bonbons!");
         }
 
 
@@ -81,6 +85,7 @@ public class ProfilActivity extends AppCompatActivity {
                 SharedPreferences.Editor prefsEditor = mPrefs.edit();
                 prefsEditor.putString("user", json);
                 prefsEditor.commit();
+
             }
         });
 
@@ -96,6 +101,7 @@ public class ProfilActivity extends AppCompatActivity {
 
 
     }
+
 
     /*public int getlevelUser(){
         UserModel user = new UserModel();
