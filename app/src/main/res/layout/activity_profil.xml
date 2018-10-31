@@ -10,27 +10,12 @@
     <ImageView
         android:id="@+id/user_avatar"
         android:layout_width="0dp"
-        android:layout_height="186dp"
+        android:layout_height="138dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bandeau" />
-
-    <EditText
-        android:id="@+id/et_pseudo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:ems="10"
-        android:hint="pseudo"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_avatar"
-        app:layout_constraintVertical_bias="0.045" />
 
     <TextView
         android:id="@+id/tv_level"
@@ -44,26 +29,23 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.929"
+        app:layout_constraintHorizontal_bias="0.903"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_avatar"
-        app:layout_constraintVertical_bias="0.004" />
+        app:layout_constraintVertical_bias="0.05" />
 
     <TextView
         android:id="@+id/tv_nbBonbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="160dp"
         android:text="TextView"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_pseudo"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_pdBonbon"
@@ -79,39 +61,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_nbBonbon"
-        app:layout_constraintVertical_bias="0.024" />
-
-    <Button
-        android:id="@+id/bt_update"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/button_design"
-        android:text="mettre à jour mon profil"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/et_pseudo"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/et_pseudo"
-        app:layout_constraintTop_toBottomOf="@+id/user_avatar"
-        app:layout_constraintVertical_bias="0.73" />
+        app:layout_constraintVertical_bias="0.221" />
 
     <Button
         android:id="@+id/bt_citrouille"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/button_design"
-        android:text="ma citrouille"
+        android:text="MON PANIER"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/et_pseudo"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/et_pseudo"
         app:layout_constraintTop_toBottomOf="@+id/user_avatar"
-        app:layout_constraintVertical_bias="0.506" />
+        app:layout_constraintVertical_bias="0.693"
+        tools:layout_editor_absoluteX="148dp" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

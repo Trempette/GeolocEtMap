@@ -34,11 +34,6 @@
 
         <activity android:name=".ProfilActivity" />
         <activity android:name=".CitrouilleListActivity" />
-        <activity
-            android:name=".NavigationActivity"
-            android:label="@string/title_activity_navigation">
-
-        </activity>
 
     </application>
 
