@@ -38,7 +38,6 @@ public class ProfilActivity extends AppCompatActivity {
             return false;
         }
     };
-    private UserModel user;
     private String    json;
     private TextView tv_nbBonbon;
     private TextView tv_pdBonbon;
@@ -54,40 +53,20 @@ public class ProfilActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        final SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-
-        Gson gson = new Gson();
-        json = mPrefs.getString("MyObject", "");
-        user = gson.fromJson(json, UserModel.class);
-        etpseudo = findViewById(R.id.et_pseudo);
-
         tv_nbBonbon = findViewById(R.id.tv_nbBonbon);
         tv_pdBonbon = findViewById(R.id.tv_pdBonbon);
         tvLevel = findViewById(R.id.tv_level);
 
-     /*   if (user.getNom().length() < 0) {
-            etpseudo.setText(user.getNom());
-            tvLevel.setText(user.getLevel());
-            int nbBonbon = user.getCandy();
-            //double pdBonbon = user.getPoid();
-            tv_nbBonbon.setText("Vous avez " + nbBonbon + " bonbons!");
-            tv_pdBonbon.setText("Vous avez un poids de " + nbBonbon + "g de bonbons!");
-        }
+        SharedPreferences sharedPreferences = getSharedPreferences("mypref", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String currentUser = sharedPreferences.getString("currentUser", null);
+        UserModel userModel = gson.fromJson(currentUser, UserModel.class);
 
-
-        Button btUpdate = findViewById(R.id.bt_update);
-        btUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String pseudo = etpseudo.getText().toString();
-                user.setNom(pseudo);
-                SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                prefsEditor.putString("user", json);
-                prefsEditor.commit();
-
-            }
-        });
+        tvLevel.setText(String.valueOf(userModel.getLevel()));
+        int nbBonbon = userModel.getCandy();
+        double pdBonbon = userModel.getPoid();
+        tv_nbBonbon.setText("Vous avez " + nbBonbon + " bonbons!");
+        tv_pdBonbon.setText("Vous avez un poids de " + pdBonbon + "g de bonbons!");
 
         Button btCitrouille = findViewById(R.id.bt_citrouille);
         btCitrouille.setOnClickListener(new View.OnClickListener() {
@@ -97,13 +76,13 @@ public class ProfilActivity extends AppCompatActivity {
                         CitrouilleListActivity.class);
                 startActivity(goToCitrouilleList);
             }
-        });*/
+        });
 
 
     }
 
+    public int getlevelUser(){
 
-    /*public int getlevelUser(){
         UserModel user = new UserModel();
         int nbCandy = user.getCandy();
         int level = 0;
@@ -132,5 +111,5 @@ public class ProfilActivity extends AppCompatActivity {
             level = 11;
         }
         return  level;
-    }*/
+    }
 }
